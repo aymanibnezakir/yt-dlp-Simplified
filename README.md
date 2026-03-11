@@ -15,8 +15,8 @@ A simple and easy-to-use graphical user interface (GUI) for the powerful command
 ## How to Use
 
 1.  **Run the application:**
-    -   On Windows, run `yt-dlp Simplified.exe`.
-    -   On Linux, run the `yt-dlp Simplied` executable. (May need to use `chmod` command)
+    -   On Windows, run `yt-dlp-Simplified.exe`.
+    -   On Linux, run the `yt-dlp-Simplified` executable. (May need to use `chmod` command)
 2.  **Enter the URL:** Paste the URL of the video you want to download into the "Enter URL" field.
 3.  **Choose a Location:** Click "Choose Location" to select a folder where you want to save your download. This location will be saved for future use.
 4.  **Select Download Type:**
@@ -39,6 +39,9 @@ To build this project from the source code, you will need:
 
 -   Python 3
 -   The `Nuitka` Python compiler (if you want to create an executable)
+-   The `uv` package manager (if you want to create an executable)
+-   Run the command: `uv sync` to install dependencies
+-   Build the application using the command: `python -m nuitka ui.py --standalone --windows-console-mode=disable --enable-plugin=tk-inter --include-package-data=ttkthemes --windows-icon-from-ico=icon.ico --include-data-files=icon.ico=icon.ico --include-data-files=bins/*=bins/ --output-filename="yt-dlp-Simplified.exe"`
 
 You can run the application directly from the source by executing the `ui.py` file:
 
