@@ -29,7 +29,7 @@ class Window:
         console_output (tk.Text): The text widget for the console output.
     """
     def __init__(self) -> None:
-        self.version = "1.1.0"
+        self.version = "1.5.0"
         self.root = ThemedTk(theme="yaru")
         self.root.title(f"yt-dlp Simplified {self.version}")
         self.root.iconbitmap("icon.ico")
