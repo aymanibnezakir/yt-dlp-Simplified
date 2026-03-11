@@ -8,27 +8,28 @@ A simple and easy-to-use graphical user interface (GUI) for the powerful command
 - **Simple Interface:** A clean and straightforward interface for downloading videos.
 - **Video and Audio Downloads:** Choose to download the full video or just the audio in MP3 format.
 - **Save Location:** Select and save your preferred download location.
-- **Real-time Console Output:** See the download progress and any messages from `yt-dlp` in real-time.
-- **Built-in Updater:** Keep your `yt-dlp` executable up-to-date with a single click.
+- **Real-time Console Output:** See the download progress and any messages from `yt-dlp` (engine) in real-time.
+- **Built-in Updater:** Keep your `yt-dlp` (engine) up-to-date with a single click.
 - **Cross-Platform:** Works on both Windows and Linux.
 
 ## How to Use
 
 1.  **Run the application:**
     -   On Windows, run `yt-dlp-Simplified.exe`.
-    -   On Linux, run the `yt-dlp-Simplified` executable. (May need to use `chmod` command)
+    -   On Linux, run the `yt-dlp-Simplified` executable. (May need to use `chmod +x` command)
 2.  **Enter the URL:** Paste the URL of the video you want to download into the "Enter URL" field.
 3.  **Choose a Location:** Click "Choose Location" to select a folder where you want to save your download. This location will be saved for future use.
 4.  **Select Download Type:**
-    -   For a video, leave the "Audio only" checkbox unchecked.
-    -   For audio, check the "Audio only" box.
-5.  **Download:** Click the "Download" button to start the download. You can monitor the progress in the console window.
+    -   For a video, leave the "Save as Audio" checkbox unchecked.
+    -   For audio, check the "Save as Audio" box.
+5.  **Download:** Click the "Download" button to start the download.
 
 ## Dependencies
 
 This application relies on the following external programs, which are included in the `bins` directory:
 
 -   **yt-dlp:** The core video downloading tool.
+-   **deno:** The js runtime for yt-dlp.
 -   **ffmpeg:** Used for processing and converting video and audio files (e.g., creating MP3s).
 
 The application will automatically check for these files on startup.
