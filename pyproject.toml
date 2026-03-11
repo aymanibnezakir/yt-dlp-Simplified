@@ -1,0 +1,10 @@
+[project]
+name = "yt-dlp-simplified"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "nuitka>=4.0.4",
+    "ttkthemes>=3.3.0",
+]

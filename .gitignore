@@ -1,0 +1,8 @@
+__pycache__/
+bins/
+*.exe
+__pycache__/
+.venv/
+ui.dist/
+ui.build/
+
