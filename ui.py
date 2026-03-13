@@ -29,7 +29,7 @@ class Window:
         console_output (tk.Text): The text widget for the console output.
     """
     def __init__(self) -> None:
-        self.version = "1.6.0"
+        self.version = "1.6.1"
         self.root = ThemedTk(theme="yaru")
         self.root.title(f"yt-dlp Simplified {self.version}")
         self.root.iconbitmap("icon.ico")
@@ -265,6 +265,13 @@ class Window:
             messagebox.showerror("Error", "Please choose a save location (directory).")
             return
         
+        # Playlist warning
+        if not ignore_playlist and "list=" in url:
+            result = messagebox.askyesno("Playlist Warning", "The URL refers to a video and a playlist. Do you want to download the video only?")
+            if result:
+                ignore_playlist = True
+             
+
         # Use a temporary handler just for validation
         validator = download_module.Download(url, aud_only, ignore_playlist, save_path)
         if not validator.verifyLink():
