@@ -20,9 +20,10 @@ class Download:
         yt_dlp_exe (str): The path to the yt-dlp executable.
         ffmpeg_loc (str): The path to the ffmpeg executable.
     """
-    def __init__(self, link: str, aud_only: bool, save_path: str) -> None:
+    def __init__(self, link: str, aud_only: bool, ignore_playlist: bool, save_path: str) -> None:
         self.link = link
         self.aud_only = aud_only
+        self.ignore_playlist = ignore_playlist
         self.save_path = save_path
 
         self.yt_dlp_exe = DEPENDENCY_PATHS.yt_dlp
@@ -49,6 +50,9 @@ class Download:
             # "--progress",       # Show progress in output
             # "--newline",        # Ensure progress is on new lines
         ]
+
+        if self.ignore_playlist:
+            cmd.append("--no-playlist")
 
         if self.aud_only:
             # Audio-only command
@@ -108,13 +112,13 @@ class Download:
                         if clean_line == "":
                             status_callback(f"")
                         else:
-                            status_callback(f"[yt-dlp] {clean_line}", is_progress)
+                            status_callback(f"[Engine] {clean_line}", is_progress)
                 
                 proc.wait()
                 if proc.returncode != 0:
-                    status_callback(f"[yt-dlp] Process exited with error code: {proc.returncode}", False)
+                    status_callback(f"[Engine] Process exited with error code: {proc.returncode}", False)
                 else:
-                    status_callback(f"[yt-dlp] Download successful!", False)
+                    status_callback(f"[Engine] Download successful!", False)
 
         except FileNotFoundError:
             status_callback(f"Error: Executable not found at {self.yt_dlp_exe}", False)
