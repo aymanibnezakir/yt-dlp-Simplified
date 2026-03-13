@@ -7,6 +7,7 @@ A simple and easy-to-use graphical user interface (GUI) for the powerful command
 
 - **Simple Interface:** A clean and straightforward interface for downloading videos.
 - **Video and Audio Downloads:** Choose to download the full video or just the audio in MP3 format.
+- **Ignore Playlist:** Choose to download a single video from a playlist URL instead of downloading the entire playlist.
 - **Save Location:** Select and save your preferred download location.
 - **Real-time Console Output:** See the download progress and any messages from `yt-dlp` (engine) in real-time.
 - **Built-in Updater:** Keep your `yt-dlp` (engine) up-to-date with a single click.
@@ -22,6 +23,7 @@ A simple and easy-to-use graphical user interface (GUI) for the powerful command
 4.  **Select Download Type:**
     -   For a video, leave the "Save as Audio" checkbox unchecked.
     -   For audio, check the "Save as Audio" box.
+    -   To download a single video from a playlist URL, check the "Ignore Playlist" box.
 5.  **Download:** Click the "Download" button to start the download.
 
 ## Dependencies
