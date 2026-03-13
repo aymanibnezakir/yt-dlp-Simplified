@@ -47,8 +47,8 @@ class Download:
         cmd = [
             self.yt_dlp_exe,
             "--ffmpeg-location", self.ffmpeg_loc,
-            # "--progress",       # Show progress in output
-            # "--newline",        # Ensure progress is on new lines
+            "--quiet",
+            "--progress",       # Show progress in output
         ]
 
         if self.ignore_playlist:
