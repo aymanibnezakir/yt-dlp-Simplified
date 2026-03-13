@@ -35,11 +35,13 @@ class Update:
             ) as proc:
                 if proc.stdout is not None:
                     for line in proc.stdout:
-                        status_callback(f"[yt-dlp] {line.strip()}")
+                        status_callback(f"[Engine] {line.strip()}")
                 
                 proc.wait()
                 if proc.returncode != 0:
-                    status_callback(f"[yt-dlp] Process exited with error code: {proc.returncode}")
+                    status_callback(f"[Engine] Process exited with error code: {proc.returncode}")
+                else:
+                    status_callback(f"[Engine] Update successful!")
 
         except FileNotFoundError:
             status_callback(f"Error: Executable not found at {self.name}")
