@@ -23,45 +23,31 @@ class Download:
     def __init__(self, link: str, aud_only: bool, save_path: str) -> None:
         self.link = link
         self.aud_only = aud_only
-        # This is now the SAVE DIRECTORY
         self.save_path = save_path
 
-        # --- MODIFIED: Use centralized paths ---
         self.yt_dlp_exe = DEPENDENCY_PATHS.yt_dlp
         self.ffmpeg_loc = DEPENDENCY_PATHS.ffmpeg
 
     
     def verifyLink(self) -> bool:
-        """ Verifies if the input string is a link (expanded for flexibility) """
-        if (self.link.startswith('https://') or self.link.startswith('http://')):
+        """ Verifies if the input string is a link"""
+        if self.link.startswith(('https://', 'http://', 'www.')) and len(self.link) > 10:
              return True
-        if (self.link.startswith('https://www.') or self.link.startswith('http://www.')) and len(self.link) > 15:
-            return True
+
         return False
     
-    # --- REMOVED: _prepare_save_path method ---
-    # (This method was already removed in your original file)
 
-    # --- MODIFIED: _build_command method ---
     def _build_command(self) -> list[str]:
         """Builds the yt-dlp command list based on user options."""
         
-        # --- NEW: Build output template ---
-        # self.save_path is the directory (e.g., "C:/Users/Me/Videos")
-        # yt-dlp will replace %(title)s with the video title and
-        # %(ext)s with the correct extension (mp3 or mp4).
-        # os.path.join handles Windows (\) vs. Linux (/) slashes.
         output_template = os.path.join(self.save_path, "%(title)s.%(ext)s")
-        # --- END NEW ---
 
         # Base command with essential flags for good console output
         cmd = [
             self.yt_dlp_exe,
             "--ffmpeg-location", self.ffmpeg_loc,
-            "--progress",       # Show progress in output
-            "--newline",        # Ensure progress is on new lines
-            # Removed "--force-overwrites". 
-            # Default yt-dlp behavior is to overwrite if a final file exists.
+            # "--progress",       # Show progress in output
+            # "--newline",        # Ensure progress is on new lines
         ]
 
         if self.aud_only:
@@ -69,7 +55,7 @@ class Download:
             cmd.extend([
                 "-x",  # Extract audio
                 "--audio-format", "mp3",
-                "-o", output_template, # Set output template
+                "-o", output_template,
                 self.link
             ])
         else:
@@ -77,12 +63,12 @@ class Download:
             cmd.extend([
                 "-f", "bestvideo+bestaudio",
                 "--merge-output-format", "mp4",
-                "-o", output_template, # Set output template
+                "-o", output_template,
                 self.link
             ])
             
         return cmd
-    # --- END MODIFICATION ---
+
 
     def run_download(self, status_callback: Callable[[str, bool], None]):
         """
@@ -119,9 +105,12 @@ class Download:
                         # yt-dlp's progress output usually looks like "[download]   0.1% of" or "[download] 100% of"
                         is_progress = bool(re.search(r"\[download\]\s+\d+(\.\d+)?%\s+of", clean_line))
                         
-                        status_callback(f"[yt-dlp] {clean_line}", is_progress)
+                        if clean_line == "":
+                            status_callback(f"")
+                        else:
+                            status_callback(f"[yt-dlp] {clean_line}", is_progress)
                 
-                proc.wait() # Wait for the process to finish
+                proc.wait()
                 if proc.returncode != 0:
                     status_callback(f"[yt-dlp] Process exited with error code: {proc.returncode}", False)
                 else:
