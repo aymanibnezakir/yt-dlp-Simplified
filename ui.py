@@ -90,7 +90,7 @@ class Window:
 
 
         self.audOnly = tk.BooleanVar(value=False)
-        self.audOnlyBtn = ttk.Checkbutton(container, text="Save as Audio (.mp3)", variable=self.audOnly)
+        self.audOnlyBtn = ttk.Checkbutton(container, text="Save as mp3", variable=self.audOnly)
         self.audOnlyBtn.grid(row=2, column=0, sticky="w", pady=(8, 0))
 
 
