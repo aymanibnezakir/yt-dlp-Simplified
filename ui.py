@@ -1,7 +1,6 @@
 """ Core UI module of the program.
     Also, the main entry point for the program."""
 
-import sys
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, font
 from ttkthemes import ThemedTk
