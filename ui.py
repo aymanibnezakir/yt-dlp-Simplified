@@ -24,12 +24,12 @@ class Window:
         audOnly (tk.BooleanVar): A variable to indicate whether to download only the audio.
         audOnlyBtn (ttk.Checkbutton): The checkbutton to select audio-only download.
         dwnBtn (ttk.Button): The button to start the download.
-        updYtdlpBtn (ttk.Button): The button to update yt-dlp.
+        updEngineBtn (ttk.Button): The button to update yt-dlp.
         console_scrollbar (ttk.Scrollbar): The scrollbar for the console output.
         console_output (tk.Text): The text widget for the console output.
     """
     def __init__(self) -> None:
-        self.version = "1.5.0"
+        self.version = "1.6.0"
         self.root = ThemedTk(theme="yaru")
         self.root.title(f"yt-dlp Simplified {self.version}")
         self.root.iconbitmap("icon.ico")
@@ -94,14 +94,21 @@ class Window:
         self.audOnlyBtn.grid(row=2, column=0, sticky="w", pady=(8, 0))
 
 
+        self.ignorePlaylist = tk.BooleanVar(value=False)
+        self.ignorePlaylistBtn = ttk.Checkbutton(container, text="Ignore Playlist", variable=self.ignorePlaylist)
+        self.ignorePlaylistBtn.grid(row=2, column=1, sticky="w", pady=(8, 0))
+
+
         btn_frame = ttk.Frame(container)
         btn_frame.grid(row=2, column=1, sticky="e", pady=(8, 0))
+
 
         self.dwnBtn = ttk.Button(btn_frame, text="Download", command=self.download)
         self.dwnBtn.pack(side="right")
 
-        self.updYtdlpBtn = ttk.Button(btn_frame, text="Update Engine", command=self.updDlp)
-        self.updYtdlpBtn.pack(side="right", padx=(0, 8))
+
+        self.updEngineBtn = ttk.Button(btn_frame, text="Update Engine", command=self.updDlp)
+        self.updEngineBtn.pack(side="right", padx=(0, 8))
 
 
         console_frame = ttk.Frame(container)
@@ -196,12 +203,12 @@ class Window:
     def disable_buttons(self):
         """Disables buttons during an operation."""
         self.dwnBtn.config(state="disabled")
-        self.updYtdlpBtn.config(state="disabled")
+        self.updEngineBtn.config(state="disabled")
 
     def enable_buttons(self):
         """Enables buttons after an operation."""
         self.dwnBtn.config(state="normal")
-        self.updYtdlpBtn.config(state="normal")
+        self.updEngineBtn.config(state="normal")
     
     
     def run_startup_checks(self):
@@ -237,7 +244,6 @@ class Window:
         """Worker thread for running the update process."""
         try:
             update_handler.update(self.append_to_console)
-            self.append_to_console("Update check finished!\n")
         except Exception as e:
             self.append_to_console(f"Update failed: {e}")
         finally:
@@ -248,6 +254,7 @@ class Window:
         url = self.urlEntry.get().strip()
         save_path = self.locationEntry.get().strip() 
         aud_only = self.audOnly.get()
+        ignore_playlist = self.ignorePlaylist.get()
 
         # --- Validation ---
         if not url:
@@ -259,7 +266,7 @@ class Window:
             return
         
         # Use a temporary handler just for validation
-        validator = download_module.Download(url, aud_only, save_path)
+        validator = download_module.Download(url, aud_only, ignore_playlist, save_path)
         if not validator.verifyLink():
             messagebox.showerror("Error", "Invalid URL provided.")
             return
@@ -269,7 +276,7 @@ class Window:
         self.append_to_console(f"Starting download for: {url}")
         
         # Create the real handler for the thread
-        download_handler = download_module.Download(url, aud_only, save_path)
+        download_handler = download_module.Download(url, aud_only, ignore_playlist, save_path)
         
         threading.Thread(
             target=self.run_download_thread, 
