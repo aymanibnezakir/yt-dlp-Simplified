@@ -197,10 +197,11 @@ class Window:
         try:
             upd = self_updater.Updater()
             result = upd.check_for_update()
-            if not result:
-                self.append_to_console("Update check complete.\n")
+            if result:
+                self.append_to_console("Update started, closing window...")
+                self.root.destroy() 
         except Exception as e:
-            self.append_to_console(f"Update check failed: {e}")
+            messagebox.showerror("Error", f"Update check failed: {e}")
         finally:
             self.root.after(0, self.enable_buttons)
 
