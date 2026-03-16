@@ -26,6 +26,7 @@ class Update:
         try:
             with subprocess.Popen(
                 [self.name, "-U"],
+                stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,

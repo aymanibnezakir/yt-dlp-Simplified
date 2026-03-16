@@ -92,6 +92,7 @@ class Download:
             # Start the subprocess
             with subprocess.Popen(
                 cmd,
+                stdin=subprocess.DEVNULL,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
