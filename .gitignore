@@ -6,3 +6,6 @@ __pycache__/
 ui.dist/
 ui.build/
 config.json
+test.py
+self_updater*
+nuitka*

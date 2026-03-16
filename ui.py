@@ -1,14 +1,23 @@
 """ Core UI module of the program.
     Also, the main entry point for the program."""
 
+import sys
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, font
 from ttkthemes import ThemedTk
 import threading
+import webbrowser
+import subprocess
+import os
+import sys
 import download as download_module
 import update_ytdlp
 import configManager as cfm
 import app_config
+
+from version import __version__
+import self_updater
+
 
 
 class Window:
@@ -28,7 +37,7 @@ class Window:
         console_output (tk.Text): The text widget for the console output.
     """
     def __init__(self) -> None:
-        self.version = "1.6.1"
+        self.version = __version__
         self.root = ThemedTk(theme="yaru")
         self.root.title(f"yt-dlp Simplified {self.version}")
         self.root.iconbitmap("icon.ico")
@@ -45,7 +54,6 @@ class Window:
         self.root.geometry('600x600')
 
         self.root.resizable(False, False)
-        # self.root.minsize(460, 300)
 
 
         try:
@@ -62,7 +70,9 @@ class Window:
 
         container.rowconfigure(3, weight=1)
         container.columnconfigure(1, weight=1)
-
+        
+        
+        # URL Entry
         ttk.Label(container, text="Enter URL").grid(row=0, column=0, sticky="w", pady=(0, 8))
         self.urlEntry = ttk.Entry(container)
         self.urlEntry.grid(row=0, column=1, sticky="ew", pady=(0, 8))
@@ -99,7 +109,7 @@ class Window:
 
 
         btn_frame = ttk.Frame(container)
-        btn_frame.grid(row=2, column=1, sticky="e", pady=(8, 0))
+        btn_frame.grid(row=2, column=0, columnspan=2, sticky="e", pady=(8, 0))
 
 
         self.dwnBtn = ttk.Button(btn_frame, text="Download", command=self.download)
@@ -137,9 +147,62 @@ class Window:
             self.append_to_console(log)
         self._pending_logs.clear()
         
+        self.create_menu()
 
         self.run_startup_checks()
 
+    def create_menu(self):
+        self.menubar = tk.Menu(self.root)
+        self.root.config(menu=self.menubar)
+
+        # File Menu
+        self.file_menu = tk.Menu(self.menubar, tearoff=0)
+        self.file_menu.add_command(label="Settings", command=self.open_settings)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label="Exit", command=self.root.destroy)
+        self.menubar.add_cascade(label="File", menu=self.file_menu)
+
+        # Help Menu
+        self.help_menu = tk.Menu(self.menubar, tearoff=0)
+        self.help_menu.add_command(label="Check for updates", command=self.check_for_updates)
+        self.help_menu.add_separator()
+        self.help_menu.add_command(label="About", command=self.show_about)
+        self.help_menu.add_separator()
+        self.help_menu.add_command(label="Github", command=self.open_github)
+        self.menubar.add_cascade(label="Help", menu=self.help_menu)
+
+    def open_settings(self):
+        messagebox.showinfo("Settings", "Settings feature coming soon!")
+        return 
+
+        # TODO: Implement settings
+
+    def show_about(self):
+        messagebox.showinfo("About", f"yt-dlp Simplified {self.version}\nAuthor: Ayman Ibne Zakir\n\nA simple UI for yt-dlp.")
+
+    def open_github(self):
+        webbrowser.open("https://github.com/aymanibnezakir/yt-dlp-Simplified")
+
+    def check_for_updates(self):
+        self.disable_buttons()
+        self.append_to_console("Checking for updates...")
+        
+        threading.Thread(
+            target=self.run_update_check_thread,
+            daemon=True
+        ).start()
+
+    def run_update_check_thread(self):
+        """Worker thread for checking updates."""
+        try:
+            upd = self_updater.Updater()
+            result = upd.check_for_update()
+            if not result:
+                self.append_to_console("Update check complete.\n")
+        except Exception as e:
+            self.append_to_console(f"Update check failed: {e}")
+        finally:
+            self.root.after(0, self.enable_buttons)
 
     def updLocEntry(self, txt: str):
         self.locationEntry.config(state="normal")
@@ -191,7 +254,8 @@ class Window:
         def _replace():
             self.console_output.config(state="normal")
             # Delete the contents of the last inserted line (which is at end-2l because of tk's trailing newline)
-            self.console_output.delete("end-2l", "end-2l lineend")
+            if int(self.console_output.index('end-1c').split('.')[0]) > 1:
+                self.console_output.delete("end-2l", "end-2l lineend")
             # Insert the new text at the same line
             self.console_output.insert("end-2l", text)
             self.console_output.config(state="disabled")
@@ -203,11 +267,13 @@ class Window:
         """Disables buttons during an operation."""
         self.dwnBtn.config(state="disabled")
         self.updEngineBtn.config(state="disabled")
+        self.help_menu.entryconfig(0, state="disabled")
 
     def enable_buttons(self):
         """Enables buttons after an operation."""
         self.dwnBtn.config(state="normal")
         self.updEngineBtn.config(state="normal")
+        self.help_menu.entryconfig(0, state="normal")
     
     
     def run_startup_checks(self):
@@ -317,5 +383,8 @@ class Window:
 
 
 if __name__ == "__main__":
-    window = Window()
-    window.run()
+    if len(sys.argv) == 1:
+        window = Window()
+        window.run()
+    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
+        print(__version__)

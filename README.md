@@ -44,8 +44,9 @@ To build this project from the source code, you will need:
 -   The `Nuitka` Python compiler (if you want to create an executable)
 -   The `uv` package manager (if you want to create an executable)
 -   Run the command: `uv sync` to install dependencies
--   Build the application using the command (On Windows): `python -m nuitka ui.py --standalone --windows-console-mode=disable --enable-plugin=tk-inter --include-package-data=ttkthemes --windows-icon-from-ico=icon.ico --include-data-files=icon.ico=icon.ico --include-data-files=bins/*=bins/ --output-filename="yt-dlp-Simplified.exe"`
+-   Build the application using the command (On Windows): `python -m nuitka ui.py --standalone --windows-console-mode=attach --enable-plugin=tk-inter --include-package-data=ttkthemes --windows-icon-from-ico=icon.ico --include-data-files=icon.ico=icon.ico --include-data-files=bins/*=bins/ --output-filename="yt-dlp-Simplified.exe"`
 -   Build the application using the command (On Linux): `python -m nuitka ui.py --standalone --enable-plugin=tk-inter --include-package-data=ttkthemes --include-data-files=icon.ico=icon.ico --include-data-files=bins/*=bins/ --output-filename="yt-dlp-Simplified"`
+-   Build the updater (Remove .exe on linux): `python -m nuitka --standalone --onefile --windows-console-mode=attach --enable-plugin=tk-inter --output-filename="updater.exe" self_updater.py`
 
 You can run the application directly from the source by executing the `ui.py` file:
 
