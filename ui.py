@@ -185,7 +185,6 @@ class Window:
 
     def check_for_updates(self):
         self.disable_buttons()
-        self.append_to_console("Checking for updates...")
         
         threading.Thread(
             target=self.run_update_check_thread,
