@@ -413,5 +413,3 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         window = Window()
         window.run()
-    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
-        print(__version__)
