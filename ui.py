@@ -73,10 +73,35 @@ class Window:
         
         
         # URL Entry
-        ttk.Label(container, text="Enter URL").grid(row=0, column=0, sticky="w", pady=(0, 8))
         self.urlEntry = ttk.Entry(container)
-        self.urlEntry.grid(row=0, column=1, sticky="ew", pady=(0, 8))
-        self.urlEntry.focus()
+        self.urlEntry.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 8))
+        
+        placeholder_text = "Enter or paste an URL"
+        self.urlEntry.insert(0, placeholder_text)
+        self.urlEntry.config(foreground="gray", justify="center")
+
+        def on_focus_in(event):
+            if self.urlEntry.get() == placeholder_text:
+                self.urlEntry.delete(0, tk.END)
+                self.urlEntry.config(foreground="black", justify="left")
+
+        def on_focus_out(event):
+            if not self.urlEntry.get():
+                self.urlEntry.config(justify="center")
+                self.urlEntry.insert(0, placeholder_text)
+                self.urlEntry.config(foreground="gray")
+            else:
+                self.urlEntry.xview_moveto(0)
+
+        def on_after_paste(event):
+            def focus_start():
+                self.urlEntry.xview_moveto(0)
+                self.urlEntry.icursor(0)
+            self.urlEntry.after(10, focus_start)
+
+        self.urlEntry.bind("<FocusIn>", on_focus_in)
+        self.urlEntry.bind("<FocusOut>", on_focus_out)
+        self.urlEntry.bind("<<Paste>>", on_after_paste)
         self.urlEntry.bind("<Return>", lambda e: self.download())
 
 
@@ -93,7 +118,7 @@ class Window:
                                     command=self.browse)
         self.browseBtn.grid(row=1, column=0, sticky="w", padx=(0, 8))
 
-        self.locationEntry = ttk.Entry(container, state="disabled")
+        self.locationEntry = ttk.Entry(container, state="disabled", justify="center")
         self.locationEntry.grid(row=1, column=1, sticky="ew")
         self.updLocEntry(dat) # type: ignore
 
@@ -317,6 +342,8 @@ class Window:
     
     def download(self):
         url = self.urlEntry.get().strip()
+        if url == "Enter or paste URL":
+            url = ""
         save_path = self.locationEntry.get().strip() 
         aud_only = self.audOnly.get()
         ignore_playlist = self.ignorePlaylist.get()
